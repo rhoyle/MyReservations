@@ -20,6 +20,7 @@ class Customer extends Model
         'phone_number',
         'description',
         'lead_source_id',
+        'pipeline_stage_id',
         'tag_id',
     ];
 
@@ -31,6 +32,11 @@ class Customer extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function pipelineStage(): BelongsTo
+    {
+        return $this->belongsTo(PipelineStage::class);
     }
 
 }
