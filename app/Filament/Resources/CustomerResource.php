@@ -102,8 +102,12 @@ class CustomerResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->hidden(fn($record) => $record->trashed()),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
                 Tables\Actions\Action::make('Move to Stage')
+                    ->hidden(fn($record) => $record->trashed())
                     ->icon('heroicon-m-pencil-square')
                     ->form([
                         Forms\Components\Select::make('pipeline_stage_id')
@@ -132,10 +136,25 @@ class CustomerResource extends Resource
                             ->send();
                     }),
             ])
+            ->recordUrl(function ($record) {
+                // If the record is trashed, return null
+                if ($record->trashed()) {
+                    // Null will disable the row click
+                    return null;
+                }
+
+                // Otherwise, return the edit page URL
+                return Pages\EditCustomer::getUrl([$record->id]);
+            })
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->hidden(function (Pages\ListCustomers $livewire) {
+                        return $livewire->activeTab == 'archived';
+                    }),
+                Tables\Actions\RestoreBulkAction::make()
+                    ->hidden(function (Pages\ListCustomers $livewire) {
+                        return $livewire->activeTab != 'archived';
+                    }),
             ]);
     }
 

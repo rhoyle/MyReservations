@@ -45,6 +45,12 @@ class ListCustomers extends ListRecords
                 });
         }
 
+        $tabs['archived'] = Tab::make('Archived')
+            ->badge(Customer::onlyTrashed()->count())
+            ->modifyQueryUsing(function ($query) {
+                return $query->onlyTrashed();
+            });
+
         return $tabs;
     }
 
