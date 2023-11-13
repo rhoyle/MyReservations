@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('customers', function (Blueprint $table) {
-            $table->foreignIdFor(PipelineStage::class)->nullable()->constrained();
+            $table->foreignIdFor(PipelineStage::class)->after('lead_source_id')->nullable()->constrained();
         });
     }
 
