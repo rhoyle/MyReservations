@@ -12,6 +12,12 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
+use Filament\Infolists\Infolist;
+use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -98,6 +104,7 @@ class CustomerResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+
             ->filters([
                 //
             ])
@@ -145,6 +152,7 @@ class CustomerResource extends Resource
 
                 // Otherwise, return the edit page URL
                 return Pages\EditCustomer::getUrl([$record->id]);
+//                return Pages\ViewCustomer::getUrl([$record->id]);
             })
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
@@ -155,6 +163,42 @@ class CustomerResource extends Resource
                     ->hidden(function (Pages\ListCustomers $livewire) {
                         return $livewire->activeTab != 'archived';
                     }),
+            ]);
+    }
+
+    public static function infoList(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Personal Information')
+                    ->schema([
+                        TextEntry::make('first_name'),
+                        TextEntry::make('last_name'),
+                    ])
+                    ->columns(),
+                Section::make('Contact Information')
+                    ->schema([
+                        TextEntry::make('email'),
+                        TextEntry::make('phone_number'),
+                    ])
+                    ->columns(),
+                Section::make('Additional Details')
+                    ->schema([
+                        TextEntry::make('description'),
+                    ]),
+                Section::make('Lead and Stage Information')
+                    ->schema([
+                        TextEntry::make('leadSource.name'),
+                        TextEntry::make('pipelineStage.name'),
+                    ])
+                    ->columns(),
+                Section::make('Pipeline Stage History and Notes')
+                    ->schema([
+                        ViewEntry::make('pipelineStageLogs')
+                            ->label('')
+                            ->view('infolists.components.pipeline-stage-history-list')
+                    ])
+                    ->collapsible()
             ]);
     }
 
@@ -171,6 +215,7 @@ class CustomerResource extends Resource
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
+//            'view' => Pages\ViewCustomer::route('/{record}'),
         ];
     }
 }
