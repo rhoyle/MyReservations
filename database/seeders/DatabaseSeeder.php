@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             CustomerSeeder::class,
             LeadSourceSeeder::class,
+            TagSeeder::class,
         ]);
     }
 }

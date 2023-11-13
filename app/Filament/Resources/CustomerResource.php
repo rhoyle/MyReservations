@@ -38,12 +38,19 @@ class CustomerResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\Select::make('lead_source_id')
                     ->relationship('leadSource', 'name'),
+                Forms\Components\Select::make('tags')
+                    ->relationship('tags', 'name')
+                    ->multiple(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function ($query) {
+                // Here we are eager loading our tags to prevent N+1 issue
+                return $query->with('tags');
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')
                     // We are setting the column label to "Name"
@@ -51,8 +58,11 @@ class CustomerResource extends Resource
                     // This function allows us to format the column value
                     // In this case, we are concatenating first_name and last_name
                     ->formatStateUsing(function ($record) {
-                        return $record->first_name . ' ' . $record->last_name;
+                        $tagsList = view('customer.tagsList', ['tags' => $record->tags])->render();
+
+                        return $record->first_name . ' ' . $record->last_name . ' ' . $tagsList;
                     })
+                    ->html()
                     // This function allows us to inform Filament that this column is searchable
                     // And also define in which columns the search should be performed
                     // In this case - first_name and last_name columns
