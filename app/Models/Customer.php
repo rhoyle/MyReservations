@@ -55,4 +55,9 @@ class Customer extends Model
         return $this->hasMany(CustomerPipelineStage::class);
     }
 
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
+
 }
