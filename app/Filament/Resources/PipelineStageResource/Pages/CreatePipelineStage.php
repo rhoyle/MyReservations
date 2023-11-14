@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PipelineStageResource\Pages;
 
 use App\Filament\Resources\PipelineStageResource;
+use App\Models\PipelineStage;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 

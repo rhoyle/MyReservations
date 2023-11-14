@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
+use Filament\Infolists\Components\RepeatableEntry;
 use App\Models\Customer;
 use App\Models\PipelineStage;
 use Filament\Forms;
@@ -12,7 +13,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ViewEntry;
@@ -151,8 +151,8 @@ class CustomerResource extends Resource
                 }
 
                 // Otherwise, return the edit page URL
-                return Pages\EditCustomer::getUrl([$record->id]);
-//                return Pages\ViewCustomer::getUrl([$record->id]);
+//                return Pages\EditCustomer::getUrl([$record->id]);
+                return Pages\ViewCustomer::getUrl([$record->id]);
             })
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
@@ -215,7 +215,7 @@ class CustomerResource extends Resource
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
-//            'view' => Pages\ViewCustomer::route('/{record}'),
+            'view' => Pages\ViewCustomer::route('/{record}'),
         ];
     }
 }

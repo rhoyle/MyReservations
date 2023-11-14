@@ -27,7 +27,6 @@ class PipelineStageResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-
             ]);
     }
 
@@ -37,9 +36,6 @@ class PipelineStageResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-//                Tables\Columns\TextColumn::make('position')
-//                    ->numeric()
-//                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_default')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -73,26 +69,26 @@ class PipelineStageResource extends Resource
                         $record->save();
                     }),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->action(function ($data, $record) {
-                        if ($record->customers()->count() > 0) {
-                            Notification::make()
-                                ->danger()
-                                ->title('Pipeline Stage is in use')
-                                ->body('Pipeline Stage is in use by customers.')
-                                ->send();
-
-                            return;
-                        }
-
+                Tables\Actions\DeleteAction::make()// [tl! add:start]
+                ->action(function ($data, $record) {
+                    if ($record->customers()->count() > 0) {
                         Notification::make()
-                            ->success()
-                            ->title('Pipeline Stage deleted')
-                            ->body('Pipeline Stage has been deleted.')
+                            ->danger()
+                            ->title('Pipeline Stage is in use')
+                            ->body('Pipeline Stage is in use by customers.')
                             ->send();
 
-                        $record->delete();
-                    })
+                        return;
+                    }
+
+                    Notification::make()
+                        ->success()
+                        ->title('Pipeline Stage deleted')
+                        ->body('Pipeline Stage has been deleted.')
+                        ->send();
+
+                    $record->delete();
+                })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -117,3 +113,4 @@ class PipelineStageResource extends Resource
         ];
     }
 }
+
