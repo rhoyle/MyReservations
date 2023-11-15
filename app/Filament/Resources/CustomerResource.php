@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
+use App\Models\CustomField;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\RepeatableEntry;
 use App\Models\Customer;
 use App\Models\PipelineStage;
@@ -80,7 +82,35 @@ class CustomerResource extends Resource
                                 Forms\Components\Textarea::make('comments'),
                             ])
                             ->columns()
-                    ])
+                    ]),
+
+                Forms\Components\Section::make('Additional fields')
+                    ->schema([
+                        Forms\Components\Repeater::make('fields')
+                            ->hiddenLabel()
+                            ->relationship('customFields')
+                            ->schema([
+                                Forms\Components\Select::make('custom_field_id')
+                                    ->label('Field Type')
+                                    ->options(CustomField::pluck('name', 'id')->toArray())
+                                    // We will disable already selected fields
+                                    ->disableOptionWhen(function ($value, $state, Get $get) {
+                                        return collect($get('../*.custom_field_id'))
+                                            ->reject(fn($id) => $id === $state)
+                                            ->filter()
+                                            ->contains($value);
+                                    })
+                                    ->required()
+                                    // Adds search bar to select
+                                    ->searchable()
+                                    // Live is required to make sure that the options are updated
+                                    ->live(),
+                                Forms\Components\TextInput::make('value')
+                                    ->required()
+                            ])
+                            ->addActionLabel('Add another Field')
+                            ->columns(),
+                    ]),
 
             ]);
     }
@@ -218,6 +248,19 @@ class CustomerResource extends Resource
                         TextEntry::make('pipelineStage.name'),
                     ])
                     ->columns(),
+
+                Section::make('Additional fields')
+                    ->hidden(fn($record) => $record->customFields->isEmpty())
+                    ->schema(
+                    // We are looping within our relationship, then creating a TextEntry for each Custom Field
+                        fn($record) => $record->customFields->map(function ($customField) {
+                            return TextEntry::make($customField->customField->name)
+                                ->label($customField->customField->name)
+                                ->default($customField->value);
+                        })->toArray()
+                    )
+                    ->columns(),
+
                 Section::make('Documents')
                     // This will hide the section if there are no documents
                     ->hidden(fn($record) => $record->documents->isEmpty())
