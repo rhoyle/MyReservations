@@ -11,7 +11,8 @@ class CustomerPipelineStage extends Model
         'customer_id',
         'pipeline_stage_id',
         'user_id',
-        'notes'
+        'notes',
+        'employee_id',
     ];
 
     public function user(): BelongsTo
@@ -28,4 +29,10 @@ class CustomerPipelineStage extends Model
     {
         return $this->belongsTo(PipelineStage::class);
     }
+
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'employee_id');
+    }
+
 }

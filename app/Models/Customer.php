@@ -22,6 +22,7 @@ class Customer extends Model
         'description',
         'lead_source_id',
         'pipeline_stage_id',
+        'employee_id',
         'tag_id',
     ];
 
@@ -30,9 +31,24 @@ class Customer extends Model
         self::created(function (Customer $customer) {
             $customer->pipelineStageLogs()->create([
                 'pipeline_stage_id' => $customer->pipeline_stage_id,
+                'employee_id' => $customer->employee_id,
                 'user_id' => auth()->check() ? auth()->id() : null
             ]);
         });
+
+        self::updated(function (Customer $customer) {
+            $lastLog = $customer->pipelineStageLogs()->whereNotNull('employee_id')->latest()->first();
+
+            // Here, we will check if the employee has changed, and if so - add a new log
+            if ($lastLog && $customer->employee_id !== $lastLog->employee_id) {
+                $customer->pipelineStageLogs()->create([
+                    'employee_id' => $customer->employee_id,
+                    'notes' => is_null($customer->employee_id) ? 'Employee removed' : '',
+                    'user_id' => auth()->id()
+                ]);
+            }
+        });
+
     }
 
     public function leadSource(): BelongsTo
@@ -63,6 +79,11 @@ class Customer extends Model
     public function customFields(): HasMany
     {
         return $this->hasMany(CustomFieldCustomer::class);
+    }
+
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'employee_id');
     }
 
 }

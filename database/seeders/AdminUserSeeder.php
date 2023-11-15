@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,6 +22,7 @@ class AdminUserSeeder extends Seeder
                 'id'                => 1,
                 'name'              => 'Client User',
                 'email'             => 'client@MyReservations.com',
+                'role_id'           => Role::where('name', 'Client')->first()->id,
                 'email_verified_at' => Carbon::now(),
                 'password'          => bcrypt('client7357'),
                 'remember_token'    => Str::random(10),
@@ -31,6 +33,7 @@ class AdminUserSeeder extends Seeder
                 'id'                => 2,
                 'name'              => 'Staff User',
                 'email'             => 'staff@MyReservations.com',
+                'role_id'           => Role::where('name', 'Employee')->first()->id,
                 'email_verified_at' => Carbon::now(),
                 'password'          => bcrypt('staff8159'),
                 'remember_token'    => Str::random(10),
@@ -41,6 +44,7 @@ class AdminUserSeeder extends Seeder
                 'id'                => 3,
                 'name'              => 'Admin User',
                 'email'             => 'admin@MyReservations.com',
+                'role_id'           => Role::where('name', 'Admin')->first()->id,
                 'email_verified_at' => Carbon::now(),
                 'password'          => bcrypt('admin9123'),
                 'remember_token'    => Str::random(10),
@@ -51,6 +55,7 @@ class AdminUserSeeder extends Seeder
                 'id'                => 4,
                 'name'              => 'Richard A. Hoyle',
                 'email'             => 'rhoyle@MyReservations.com',
+                'role_id'           => Role::where('name', 'Admin')->first()->id,
                 'email_verified_at' => Carbon::now(),
                 'password'          => bcrypt('64Rah56B'),
                 'remember_token'    => Str::random(10),

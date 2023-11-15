@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
 use App\Models\CustomField;
+use App\Models\Role;
+use App\Models\User;
 use Filament\Forms\Get;
 use Filament\Infolists\Components\RepeatableEntry;
 use App\Models\Customer;
@@ -35,6 +37,11 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make('Employee Information')
+                    ->schema([
+                        Forms\Components\Select::make('employee_id')
+                            ->options(User::where('role_id', Role::where('name', 'Employee')->first()->id)->pluck('name', 'id'))
+                    ]),
                 Forms\Components\Section::make('Customer Details')
                     ->schema([
                         Forms\Components\TextInput::make('first_name')
