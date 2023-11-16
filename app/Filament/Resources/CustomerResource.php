@@ -27,6 +27,7 @@ use Illuminate\Console\View\Components\Task;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Storage;
+use App\Filament\Resources\QuoteResource\Pages\CreateQuote;
 
 
 class CustomerResource extends Resource
@@ -174,6 +175,7 @@ class CustomerResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ActionGroup::make([
                 Tables\Actions\EditAction::make()
                     ->hidden(fn($record) => $record->trashed()),
                 Tables\Actions\DeleteAction::make(),
@@ -228,9 +230,16 @@ class CustomerResource extends Resource
                             ->title('Task created successfully')
                             ->success()
                             ->send();
-                    })
+                    }),
 
+                 Tables\Actions\Action::make('Create Quote')
+                     ->icon('heroicon-m-book-open')
+                     ->url(function ($record) {
+                         return CreateQuote::getUrl(['customer_id' => $record->id]);
+                     })
+                ])
             ])
+
             ->recordUrl(function ($record) {
                 // If the record is trashed, return null
                 if ($record->trashed()) {
