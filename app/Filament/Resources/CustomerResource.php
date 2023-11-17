@@ -14,6 +14,7 @@ use App\Models\Customer;
 use App\Models\PipelineStage;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Tabs;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;

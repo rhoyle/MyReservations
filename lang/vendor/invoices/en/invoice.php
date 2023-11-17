@@ -7,9 +7,9 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'invoice'                => 'Invoice',
+    'invoice'                => 'Quote',
     'serial'                 => 'Serial No.',
-    'date'                   => 'Invoice date',
+    'date'                   => 'Quote date',
     'seller'                 => 'Seller',
     'buyer'                  => 'Buyer',
     'address'                => 'Address',
